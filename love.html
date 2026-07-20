@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>💌 约会邀请函</title>
+<style>
+:root {
+  --pink: #e91e63;
+  --pink-light: #fce4ec;
+  --pink-lighter: #f8bbd0;
+  --gold: #d4a574;
+  --gold-light: #f5e6d3;
+  --bg-start: #fce4ec;
+  --bg-mid: #f3e5f5;
+  --bg-end: #e8eaf6;
+  --card-bg: rgba(255,255,255,0.85);
+  --text: #4a3548;
+  --text-light: #8d6e7f;
+  --shadow: 0 8px 32px rgba(233,30,99,0.12);
+  --shadow-hover: 0 12px 40px rgba(233,30,99,0.2);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(160deg, var(--bg-start), var(--bg-mid) 50%, var(--bg-end));
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== 花瓣 ===== */
+.petals { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+.petal {
+  position:absolute; top:-60px; font-size:24px;
+  animation: fall linear infinite;
+  opacity: 0.7;
+  filter: blur(0.5px);
+}
+.petal:nth-child(1){left:5%;animation-duration:11s;animation-delay:0s;font-size:26px;}
+.petal:nth-child(2){left:12%;animation-duration:13s;animation-delay:1.5s;font-size:20px;}
+.petal:nth-child(3){left:20%;animation-duration:10s;animation-delay:3s;font-size:28px;}
+.petal:nth-child(4){left:28%;animation-duration:14s;animation-delay:0.8s;font-size:22px;}
+.petal:nth-child(5){left:35%;animation-duration:12s;animation-delay:4s;font-size:30px;}
+.petal:nth-child(6){left:42%;animation-duration:15s;animation-delay:2s;font-size:18px;}
+.petal:nth-child(7){left:50%;animation-duration:11s;animation-delay:5s;font-size:24px;}
+.petal:nth-child(8){left:58%;animation-duration:13s;animation-delay:1s;font-size:26px;}
+.petal:nth-child(9){left:65%;animation-duration:10s;animation-delay:3.5s;font-size:20px;}
+.petal:nth-child(10){left:72%;animation-duration:14s;animation-delay:0.3s;font-size:28px;}
+.petal:nth-child(11){left:80%;animation-duration:12s;animation-delay:2.5s;font-size:22px;}
+.petal:nth-child(12){left:88%;animation-duration:15s;animation-delay:4.5s;font-size:24px;}
+.petal:nth-child(13){left:15%;animation-duration:9s;animation-delay:6s;font-size:18px;}
+.petal:nth-child(14){left:55%;animation-duration:11s;animation-delay:5.5s;font-size:26px;}
+.petal:nth-child(15){left:38%;animation-duration:13s;animation-delay:7s;font-size:20px;}
+
+@keyframes fall {
+  0%   { transform:translateY(0) rotate(0deg) scale(1); opacity:0.8; }
+  25%  { transform:translateY(25vh) translateX(30px) rotate(90deg) scale(0.9); opacity:0.7; }
+  50%  { transform:translateY(50vh) translateX(-20px) rotate(180deg) scale(1.1); opacity:0.5; }
+  75%  { transform:translateY(75vh) translateX(40px) rotate(270deg) scale(0.8); opacity:0.3; }
+  100% { transform:translateY(105vh) translateX(-10px) rotate(360deg) scale(0.6); opacity:0; }
+}
+
+/* ===== 星星 ===== */
+.stars { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+.star {
+  position:absolute; width:3px; height:3px; background:var(--gold);
+  border-radius:50%; animation:twinkle 3s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%,100%{opacity:0.3;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.8);}
+}
+
+/* ===== 主容器 ===== */
+.main-container {
+  position:relative; z-index:1; width:92%; max-width:420px;
+  margin:20px auto; perspective:1200px;
+}
+
+/* ===== 邀请函卡片 ===== */
+.invitation-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 32px 24px 28px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,0.6);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s;
+  position: relative;
+  overflow: hidden;
+}
+
+.invitation-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 20%, rgba(233,30,99,0.04) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(212,167,116,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* 信封封蜡装饰 */
+.seal {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, #e91e63, #f06292);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(233,30,99,0.3);
+  position: relative;
+}
+.seal::after {
+  content: '💘';
+  font-size: 24px;
+  animation: heartbeat 1.2s ease-in-out infinite;
+}
+@keyframes heartbeat {
+  0%,100%{transform:scale(1);}
+  15%{transform:scale(1.25);}
+  30%{transform:scale(1);}
+  45%{transform:scale(1.2);}
+  60%{transform:scale(1);}
+}
+
+/* 标题区 */
+.recipient-name {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--pink);
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+.title-line {
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-light);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+.divider {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--pink-lighter), transparent);
+  margin: 12px auto 16px;
+}
+
+/* 发送者信息 */
+.from-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.from-label { font-size:13px; color:var(--text-light); margin-bottom:2px; }
+.from-name { font-size:18px; font-weight:600; color:var(--text); }
+
+/* 日期时间 */
+.datetime-section {
+  background: linear-gradient(135deg, var(--pink-light), var(--gold-light));
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(233,30,99,0.1);
+}
+.datetime-icon { font-size:32px; flex-shrink:0; }
+.datetime-text { flex:1; }
+.datetime-label { font-size:12px; color:var(--pink); font-weight:600; margin-bottom:2px; letter-spacing:1px; }
+.datetime-value { font-size:16px; color:var(--text); font-weight:600; }
+
+/* 活动选择区 */
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--pink-lighter), transparent);
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.option-card {
+  position: relative;
+  background: rgba(255,255,255,0.7);
+  border: 2px solid rgba(233,30,99,0.08);
+  border-radius: 16px;
+  padding: 14px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.option-card:active { transform:scale(0.96); }
+.option-card .emoji { font-size:28px; display:block; margin-bottom:6px; transition:transform 0.25s; }
+.option-card .label { font-size:14px; color:var(--text); font-weight:500; }
+
+.option-card.selected {
+  border-color: var(--pink);
+  background: linear-gradient(135deg, rgba(233,30,99,0.06), rgba(244,143,177,0.08));
+  box-shadow: 0 4px 16px rgba(233,30,99,0.15);
+}
+.option-card.selected .emoji { transform:scale(1.15); }
+.option-card.selected .label { color:var(--pink); font-weight:600; }
+
+/* 选中标记 */
+.option-card .check {
+  position:absolute; top:8px; right:8px;
+  width:22px; height:22px;
+  border-radius:50%;
+  background: var(--pink);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(0);
+  transition:all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size:12px; color:#fff;
+}
+.option-card.selected .check { opacity:1; transform:scale(1); }
+
+/* 留言区 */
+.message-area {
+  margin-bottom: 10px;
+}
+.message-area textarea {
+  width: 100%;
+  min-height: 60px;
+  border: 2px solid rgba(233,30,99,0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  background: rgba(255,255,255,0.7);
+  resize: none;
+  outline: none;
+  transition: border-color 0.25s;
+  line-height: 1.5;
+}
+.message-area textarea:focus { border-color: var(--pink-lighter); }
+.message-area textarea::placeholder { color: #c9b8c4; }
+
+/* 提交按钮 */
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e91e63, #f06292);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(233,30,99,0.3);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.submit-btn:active { transform:scale(0.97); box-shadow:0 3px 12px rgba(233,30,99,0.25); }
+.submit-btn:disabled { opacity:0.5; pointer-events:none; }
+
+.submit-btn .pulse {
+  position:absolute; top:50%; left:50%;
+  width:0; height:0;
+  border-radius:50%;
+  background:rgba(255,255,255,0.3);
+  transform:translate(-50%,-50%);
+  animation: pulse-ring 2s ease-out infinite;
+}
+@keyframes pulse-ring {
+  0%{width:0;height:0;opacity:1;}
+  100%{width:400px;height:400px;opacity:0;}
+}
+
+/* ===== 结果卡片 ===== */
+.result-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s;
+}
+.result-overlay.show { display: flex; }
+
+.result-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px 24px 24px;
+  width: 88%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+@keyframes slideUp {
+  from { transform:translateY(40px); opacity:0; }
+  to { transform:translateY(0); opacity:1; }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to { opacity:1; }
+}
+
+.result-icon { font-size:48px; margin-bottom:12px; animation: heartbeat 0.6s ease-in-out; }
+.result-title { font-size:20px; font-weight:700; color:var(--pink); margin-bottom:8px; }
+.result-subtitle { font-size:14px; color:var(--text-light); margin-bottom:16px; }
+
+.result-selections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.result-tag {
+  background: var(--pink-light);
+  color: var(--pink);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.result-message-box {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.copy-btn {
+  width: 100%;
+  padding: 13px;
+  border: 2px solid var(--pink);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--pink);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.copy-btn:active { background:var(--pink-light); }
+.copy-btn.copied { background:var(--pink); color:#fff; }
+
+.close-result {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 提示 Toast */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(74,53,72,0.9);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* 响应式微调 */
+@media (max-width: 360px) {
+  .invitation-card { padding: 24px 16px 22px; }
+  .options-grid { gap: 8px; }
+  .option-card { padding: 10px 8px; }
+  .option-card .emoji { font-size: 24px; }
+  .option-card .label { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 花瓣层 -->
+<div class="petals">
+  <span class="petal">🌸</span><span class="petal">💮</span><span class="petal">🌷</span>
+  <span class="petal">🌸</span><span class="petal">💮</span><span class="petal">🌷</span>
+  <span class="petal">🌸</span><span class="petal">💮</span><span class="petal">🌷</span>
+  <span class="petal">🌸</span><span class="petal">💮</span><span class="petal">🌷</span>
+  <span class="petal">🌸</span><span class="petal">💮</span><span class="petal">🌷</span>
+</div>
+
+<!-- 星星层 -->
+<div class="stars" id="stars"></div>
+
+<!-- 主容器 -->
+<div class="main-container" id="mainContainer">
+  <div class="invitation-card" id="invitationCard">
+    <!-- 封蜡 -->
+    <div class="seal"></div>
+
+    <!-- 接收者 -->
+    <div class="recipient-name" id="recipientName">小可爱</div>
+    <div class="title-line">✨ 收到一封约会邀请函 ✨</div>
+    <div class="divider"></div>
+
+    <!-- 发送者 -->
+    <div class="from-section">
+      <div class="from-label">来自</div>
+      <div class="from-name" id="senderName">你的大笨蛋</div>
+    </div>
+
+    <!-- 日期时间 -->
+    <div class="datetime-section" id="datetimeSection">
+      <div class="datetime-icon">📅</div>
+      <div class="datetime-text">
+        <div class="datetime-label">DATE & TIME</div>
+        <div class="datetime-value" id="datetimeValue">本周六 晚上7点</div>
+      </div>
+    </div>
+
+    <!-- 活动选择 -->
+    <div class="section-title">💕 选选你想做什么</div>
+    <div class="options-grid" id="optionsGrid">
+      <!-- JS动态生成 -->
+    </div>
+
+    <!-- 留言 -->
+    <div class="message-area">
+      <textarea id="messageInput" placeholder="有什么想对我说的吗？(选填) 💬" maxlength="200"></textarea>
+    </div>
+
+    <!-- 提交 -->
+    <button class="submit-btn" id="submitBtn" onclick="submitReply()">
+      <span class="pulse"></span>
+      💌 回复TA
+    </button>
+  </div>
+</div>
+
+<!-- 结果弹窗 -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-card" id="resultCard">
+    <div class="result-icon">💘</div>
+    <div class="result-title">已发送！</div>
+    <div class="result-subtitle" id="resultSubtitle"></div>
+    <div class="result-selections" id="resultSelections"></div>
+    <div class="result-message-box" id="resultMessageBox"></div>
+    <button class="copy-btn" id="copyBtn" onclick="copyMessage()">📋 一键复制发回给TA</button>
+    <button class="close-result" onclick="closeResult()">关闭</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== 配置区 - 改这里就行 =====
+const CONFIG = {
+  recipientName: '小可爱',        // 她的昵称
+  senderName: '你的大笨蛋',       // 你的昵称
+  dateLabel: '本周六',            // 日期标签
+  timeLabel: '晚上7点',           // 时间
+  dateEmoji: '📅',               // 日期图标
+
+  // PushPlus推送token（可选，留空则仅复制文本）
+  // 获取方式：微信搜 pushplus 公众号 → 关注 → 个人中心 → 复制token
+  pushPlusToken: '',
+
+  // 活动选项 - 改emoji和文字即可，增减数量也行
+  options: [
+    { emoji: '🍺', label: '小酌一杯' },
+    { emoji: '🎬', label: '一起看电影' },
+    { emoji: '🍽️', label: '浪漫晚餐' },
+    { emoji: '🌙', label: '散步看星星' },
+    { emoji: '🎮', label: '一起打游戏' },
+    { emoji: '☕', label: '喝杯咖啡' },
+    { emoji: '🎵', label: '听音乐发呆' },
+    { emoji: '✍️', label: '你来定' },
+  ]
+};
+// ===== 配置区结束 =====
+
+// 渲染星星
+(function renderStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 30; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 96 + '%';
+    star.style.top = Math.random() * 60 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.animationDuration = (2 + Math.random() * 3) + 's';
+    star.style.width = star.style.height = (2 + Math.random() * 3) + 'px';
+    container.appendChild(star);
+  }
+})();
+
+// 填充配置
+document.getElementById('recipientName').textContent = CONFIG.recipientName;
+document.getElementById('senderName').textContent = CONFIG.senderName;
+document.getElementById('datetimeValue').textContent = CONFIG.dateLabel + ' ' + CONFIG.timeLabel;
+document.getElementById('datetimeSection').querySelector('.datetime-icon').textContent = CONFIG.dateEmoji;
+
+// 渲染选项
+const optionsGrid = document.getElementById('optionsGrid');
+let selectedOptions = new Set();
+
+CONFIG.options.forEach((opt, i) => {
+  const card = document.createElement('div');
+  card.className = 'option-card';
+  card.innerHTML = `
+    <span class="check">✓</span>
+    <span class="emoji">${opt.emoji}</span>
+    <span class="label">${opt.label}</span>
+  `;
+  card.onclick = function(e) {
+    e.preventDefault();
+    if (this.classList.contains('selected')) {
+      this.classList.remove('selected');
+      selectedOptions.delete(i);
+    } else {
+      this.classList.add('selected');
+      selectedOptions.add(i);
+    }
+    updateSubmitBtn();
+  };
+  optionsGrid.appendChild(card);
+});
+
+function updateSubmitBtn() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = selectedOptions.size === 0;
+  btn.textContent = selectedOptions.size === 0 ? '💌 至少选一个嘛' : `💌 回复TA (已选${selectedOptions.size}个)`;
+}
+
+// 初始化按钮状态
+updateSubmitBtn();
+
+// 提交
+function submitReply() {
+  if (selectedOptions.size === 0) return;
+
+  const selected = [...selectedOptions].map(i => CONFIG.options[i]);
+  const message = document.getElementById('messageInput').value.trim();
+
+  // 构建回复文本
+  let replyText = `💌 收到邀请啦！\n`;
+  replyText += `📋 我想和你一起：\n`;
+  selected.forEach(opt => {
+    replyText += `  ${opt.emoji} ${opt.label}\n`;
+  });
+  if (message) {
+    replyText += `\n💬 ${message}\n`;
+  }
+  replyText += `\n💕 期待约会～`;
+
+  // 显示结果
+  document.getElementById('resultSubtitle').textContent =
+    `已通知 ${CONFIG.senderName}` + (CONFIG.pushPlusToken ? ' (已推送)' : '');
+  document.getElementById('resultMessageBox').textContent = replyText;
+
+  const selectionsDiv = document.getElementById('resultSelections');
+  selectionsDiv.innerHTML = '';
+  selected.forEach(opt => {
+    const tag = document.createElement('span');
+    tag.className = 'result-tag';
+    tag.textContent = opt.emoji + ' ' + opt.label;
+    selectionsDiv.appendChild(tag);
+  });
+
+  document.getElementById('resultOverlay').classList.add('show');
+
+  // 重置复制按钮
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.textContent = '📋 一键复制发回给TA';
+  copyBtn.classList.remove('copied');
+
+  // PushPlus推送
+  if (CONFIG.pushPlusToken) {
+    sendPushPlus(selected, message);
+  }
+}
+
+// PushPlus推送
+function sendPushPlus(selected, message) {
+  let content = `<h3>💌 ${CONFIG.recipientName} 回复了！</h3>`;
+  content += '<p><b>选择了：</b></p><ul>';
+  selected.forEach(opt => {
+    content += `<li>${opt.emoji} ${opt.label}</li>`;
+  });
+  content += '</ul>';
+  if (message) {
+    content += `<p><b>留言：</b>${message}</p>`;
+  }
+
+  fetch('https://www.pushplus.plus/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      token: CONFIG.pushPlusToken,
+      title: `💌 ${CONFIG.recipientName}回复了你的约会邀请`,
+      content: content,
+      template: 'html'
+    })
+  }).catch(() => {}); // 静默失败，不影响主流程
+}
+
+// 复制消息
+function copyMessage() {
+  const text = document.getElementById('resultMessageBox').textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showCopySuccess();
+    }).catch(() => {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    showCopySuccess();
+  } catch(e) {
+    showToast('复制失败，请长按手动复制');
+  }
+  document.body.removeChild(textarea);
+}
+
+function showCopySuccess() {
+  const btn = document.getElementById('copyBtn');
+  btn.textContent = '✅ 已复制！去微信发给TA吧';
+  btn.classList.add('copied');
+  showToast('✅ 已复制，去微信粘贴发送吧~');
+}
+
+function closeResult() {
+  document.getElementById('resultOverlay').classList.remove('show');
+}
+
+// Toast
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// 点击弹窗背景关闭
+document.getElementById('resultOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeResult();
+});
+</script>
+</body>
+</html>
